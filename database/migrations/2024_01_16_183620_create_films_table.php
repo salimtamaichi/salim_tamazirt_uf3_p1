@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('films', function (Blueprint $table) {
@@ -19,13 +16,12 @@ return new class extends Migration
             $table->string('country', 30)->nullable();
             $table->integer('duration')->nullable();
             $table->string('img_url', 255)->nullable();
+            $table->unsignedBigInteger('language_id');
+            $table->foreign('language_id')->references('id')->on('languages');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('films');
