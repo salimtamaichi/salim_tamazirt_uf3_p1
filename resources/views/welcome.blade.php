@@ -10,7 +10,7 @@
 
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    
+
     <style>
         body {
             background-color: #202020;
@@ -42,14 +42,30 @@
                     <li class="mr-4"><a href="/filmout/oldFilms" class="hover:underline">Películas antiguas</a></li>
                     <li class="mr-4"><a href="/filmout/newFilms" class="hover:underline">Películas nuevas</a></li>
                     <li class="mr-4"><a href="/filmout/films" class="hover:underline">Películas</a></li>
-                    <li><a href="/filmout/countFilms" class="hover:underline">Contador de películas</a></li>
+                    <li class="mr-4"><a href="/filmout/countFilms" class="hover:underline">Contador de películas</a></li>
+                    <li class="mr-4"><a href="/actorout/actors" class="hover:underline">Actores</a></li>
+
+
+
                 </ul>
             </div>
         </div>
     </nav>
 
     <div class="container mx-auto mt-8">
-        <center><h2 class="text-2xl font-bold mb-4">Añadir Película</h2></center>
+        <form action="{{ route('listActorsByDecade/year') }}" method="get">
+            <label for="decade">Select Decade:</label>
+            <select name="year" id="decade">
+                <option value="1980s">1980s</option>
+                <option value="1990s">1990s</option>
+                <option value="2000s">2000s</option>
+                <button type="submit">Submit</button>
+        </form>
+        <!-- Add more options as needed -->
+        </select>
+        <center>
+            <h2 class="text-2xl font-bold mb-4">Añadir Película</h2>
+        </center>
 
         <form action="{{ route('createFilm') }}" method="post" class="mx-auto max-w-md">
             @csrf
