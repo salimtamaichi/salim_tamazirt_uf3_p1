@@ -44,6 +44,7 @@
                     <li class="mr-4"><a href="/filmout/films" class="hover:underline">Películas</a></li>
                     <li class="mr-4"><a href="/filmout/countFilms" class="hover:underline">Contador de películas</a></li>
                     <li class="mr-4"><a href="/actorout/actors" class="hover:underline">Actores</a></li>
+                    <li class="mr-4"><a href="/actorout/countActors" class="hover:underline">Contadores de Actores</a></li>
 
 
 
@@ -53,16 +54,21 @@
     </nav>
 
     <div class="container mx-auto mt-8">
-        <form action="{{ route('listActorsByDecade/year') }}" method="get">
-            <label for="decade">Select Decade:</label>
-            <select name="year" id="decade">
-                <option value="1980s">1980s</option>
-                <option value="1990s">1990s</option>
-                <option value="2000s">2000s</option>
-                <button type="submit">Submit</button>
-        </form>
+    <form action="{{ route('listActorsByDecade') }}" method="get" class="flex items-center">
+    <label for="decade" class="mr-2">Selecciona una década:</label>
+    <select name="year" id="decade" class="w-30 bg-gray-800 rounded border border-gray-700 p-2 text-sm focus:outline-none focus:border-blue-500">
+        <option value="1980" class="bg-gray-900">1980</option>
+        <option value="1990" class="bg-gray-900">1990</option>
+        <option value="2000" class="bg-gray-900">2000</option>
+        <option value="2010" class="bg-gray-900">2010</option>
+        <option value="2020" class="bg-gray-900">2020</option>
+    </select>
+    
+    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ml-2 focus:outline-none focus:shadow-outline">Entrar</button>
+</form>
+
         <!-- Add more options as needed -->
-        </select>
+
         <center>
             <h2 class="text-2xl font-bold mb-4">Añadir Película</h2>
         </center>

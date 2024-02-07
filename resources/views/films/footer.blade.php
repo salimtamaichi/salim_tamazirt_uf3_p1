@@ -29,9 +29,9 @@
             </ul>
         </nav>
         <div class="text-center">
-            <p class="text-gray-400">Teléfono: 123-456-789</p>
-            <p class="text-gray-400">Correo electrónico: info@example.com</p>
-            <p class="text-gray-400">Dirección: Dirección de tu empresa</p>
+            <p class="text-gray-400">Teléfono: El telefono del amor</p>
+            <p class="text-gray-400">Correo electrónico: amazon@prime.es</p>
+            <p class="text-gray-400">Dirección: Tu cama bebe</p>
         </div>
     </footer>
     <!-- Fin del Footer -->

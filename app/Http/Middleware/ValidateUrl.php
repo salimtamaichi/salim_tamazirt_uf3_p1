@@ -37,6 +37,6 @@ class ValidateUrl
     private function isValidUrl($url)
     {
         // Use filter_var with FILTER_VALIDATE_URL to check if the URL is valid
-        return filter_var($url, FILTER_VALIDATE_URL) !== false;
+        return filter_var($url, FILTER_VALIDATE_URL) == false;
     }
 }

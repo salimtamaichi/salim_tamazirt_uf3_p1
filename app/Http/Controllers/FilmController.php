@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FilmController extends Controller
 {
@@ -16,8 +17,14 @@ class FilmController extends Controller
     public static function readFilms(): array
     {
         // Read the JSON file containing film information.
-        $films = Storage::get('/public/films.json');
-        return json_decode($films, true); // Decode the JSON into an associative array.
+        $filmsJson = json_decode(Storage::get('/public/films.json'),true);
+        // dd($filmsJson);
+        $filmsDB = DB::table('films')->select('name', 'year', 'genre', 'country', 'duration', 'img_url')->get()->toArray();
+
+        $filmsDB=json_decode(json_encode($filmsDB),true);
+
+        $films = array_merge($filmsDB, $filmsJson);
+        return $films; // Decode the JSON into an associative array.
     }
 
     /**
@@ -203,6 +210,7 @@ class FilmController extends Controller
      */
     public function createFilm(Request $request)
     {
+        $source = env('SOURCE_DATA','database');
         $title = "All Films";
         $films = FilmController::readFilms();
         $filmUser = [
@@ -217,8 +225,12 @@ class FilmController extends Controller
         if ($this->isFilm($filmUser)) {
             return view('welcome', ["error" => "Movie already exists"]);
         } else {
+            if($source === 'json'){
             $films[] = $filmUser;
             Storage::put("/public/films.json", json_encode($films));
+            }else{
+                DB::table('films')->insert($filmUser);
+            }
             $films = FilmController::readFilms();
             return view('films.list', ["films" => $films, "title" => $title]);
         }

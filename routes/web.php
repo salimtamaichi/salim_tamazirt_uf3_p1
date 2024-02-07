@@ -38,6 +38,8 @@ Route::middleware('year')->group(function () {
         Route::get('listActorsByDecade/{year?}', [ActorController::class, 'listActorsByDecade'])
             ->where('year', '\d{4}') // Ensure that 'year' is a four-digit number
             ->name('listActorsByDecade');
+        Route::get('countActors',[ActorController:: class, 'countActors']);
+
     });
 });
 
