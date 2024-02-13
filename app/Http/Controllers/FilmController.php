@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response;
 
 class FilmController extends Controller
 {
@@ -17,11 +18,11 @@ class FilmController extends Controller
     public static function readFilms(): array
     {
         // Read the JSON file containing film information.
-        $filmsJson = json_decode(Storage::get('/public/films.json'),true);
+        $filmsJson = json_decode(Storage::get('/public/films.json'), true);
         // dd($filmsJson);
         $filmsDB = DB::table('films')->select('name', 'year', 'genre', 'country', 'duration', 'img_url')->get()->toArray();
 
-        $filmsDB=json_decode(json_encode($filmsDB),true);
+        $filmsDB = json_decode(json_encode($filmsDB), true);
 
         $films = array_merge($filmsDB, $filmsJson);
         return $films; // Decode the JSON into an associative array.
@@ -210,7 +211,7 @@ class FilmController extends Controller
      */
     public function createFilm(Request $request)
     {
-        $source = env('SOURCE_DATA','database');
+        $source = env('SOURCE_DATA', 'database');
         $title = "All Films";
         $films = FilmController::readFilms();
         $filmUser = [
@@ -225,14 +226,62 @@ class FilmController extends Controller
         if ($this->isFilm($filmUser)) {
             return view('welcome', ["error" => "Movie already exists"]);
         } else {
-            if($source === 'json'){
-            $films[] = $filmUser;
-            Storage::put("/public/films.json", json_encode($films));
-            }else{
+            if ($source === 'json') {
+                $films[] = $filmUser;
+                Storage::put("/public/films.json", json_encode($films));
+            } else {
                 DB::table('films')->insert($filmUser);
             }
             $films = FilmController::readFilms();
             return view('films.list', ["films" => $films, "title" => $title]);
+        }
+    }
+    public function updateFilm(Request $request, $id)
+    {
+        $source = env('SOURCE_DATA', 'database');
+
+        if ($source === 'json') {
+            // If using JSON file as the data source
+            $films = json_decode(Storage::get('/public/films.json'), true);
+
+            // Find the film by ID
+            $index = array_search($id, array_column($films, 'id'));
+
+            if ($index !== false) {
+                // Update film attributes
+                $films[$index]['name'] = $request->input('name');
+                $films[$index]['year'] = $request->input('year');
+                $films[$index]['genre'] = $request->input('genre');
+                $films[$index]['country'] = $request->input('country');
+                $films[$index]['duration'] = $request->input('duration');
+                $films[$index]['img_url'] = $request->input('img_url');
+
+                // Save the updated films array back to the JSON file
+                Storage::put('/public/films.json', json_encode($films));
+
+                return response()->json(['message' => 'Film updated successfully'], Response::HTTP_OK);
+            } else {
+                return response()->json(['error' => 'Film not found'], Response::HTTP_NOT_FOUND);
+            }
+        } else {
+            // If using database as the data source
+            $film = DB::table('films')->where('id', $id)->first();
+
+            if ($film) {
+                // Update film attributes
+                DB::table('films')->where('id', $id)->update([
+                    'name' => $request->input('name'),
+                    'year' => $request->input('year'),
+                    'genre' => $request->input('genre'),
+                    'country' => $request->input('country'),
+                    'duration' => $request->input('duration'),
+                    'img_url' => $request->input('img_url'),
+                ]);
+
+                return response()->json(['message' => 'Film updated successfully'], Response::HTTP_OK);
+            } else {
+                return response()->json(['error' => 'Film not found'], Response::HTTP_NOT_FOUND);
+            }
         }
     }
 }
