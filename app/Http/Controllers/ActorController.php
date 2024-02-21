@@ -2,34 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Actor; // Importar el modelo Actor
 
 class ActorController extends Controller
 {
     public function listActors()
     {
-        $actors = DB::table('actors')->select('id', 'name', 'surname', 'birthdate', 'country')->get(); // Obtener todos los registros de la tabla 'actors'
-        $actorsArray = json_decode(json_encode($actors), true); // Convertir objetos stdClass a arrays asociativos
-        $title = 'Listado de Actores'; // Agrega el título que deseas mostrar
-
+        // Obtener todos los actores utilizando Eloquent ORM
+        $actors = Actor::select('id', 'name', 'surname', 'birthdate', 'country')->get();
+    
+        // Convertir la colección de actores a un array asociativo
+        $actorsArray = $actors->toArray();
+    
+        // Agregar el título deseado
+        $title = 'Listado de Actores';
+    
         return view('actors.list', compact('actorsArray', 'title'));
     }
+    
 
     public function listActorsByDecade(Request $request)
     {
-        // Calculate the start and end years for the decade based on the selected year
-        $startYear = $request -> input('year');
+        // Calcular el inicio y fin de la década basado en el año seleccionado
+        $startYear = $request->input('year');
         $endYear = $startYear + 9;
 
-        $title = 'Listado de Actores'; // Agrega el título que deseas mostrar
+        $title = 'Listado de Actores'; // Agregar el título que deseas mostrar
 
-        // Fetch actors with birthdates between start and end years
-        $actors = DB::table('actors')
-            ->select('id', 'name', 'surname', 'birthdate', 'country')
+        // Obtener los actores con fechas de nacimiento entre los años de inicio y fin
+        $actors = Actor::select('id', 'name', 'surname', 'birthdate', 'country')
             ->whereBetween('birthdate', ["{$startYear}-01-01", "{$endYear}-12-31"])
             ->get();
-        $actorsArray = json_decode(json_encode($actors), true);
+        $actorsArray = $actors->toArray();
 
         return view('actors.list', compact('actorsArray', 'title'));
     }
@@ -37,14 +42,14 @@ class ActorController extends Controller
     public function countActors()
     {
         $title = "Total Number of Actors";
-        $actors = DB::table('actors')->count();
+        $actorsCount = Actor::count(); // Contar los actores utilizando Eloquent ORM
 
-        return view('actors.countActors', ["actors" => $actors, "title" => $title]);
+        return view('actors.countActors', ["actors" => $actorsCount, "title" => $title]);
     }
 
-    public function deleteActors($id)
+    public function deleteActor($actorId)
     {
-        $affected = DB::table('actors')->where('id', $id)->delete();
+        $affected = Actor::where('id', $actorId)->delete(); // Eliminar el actor por su ID
     
         if ($affected) {
             return response()->json(['action' => 'delete', 'status' => true]);
