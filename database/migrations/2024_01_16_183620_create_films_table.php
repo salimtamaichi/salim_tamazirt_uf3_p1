@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('country', 30)->nullable();
             $table->integer('duration')->nullable();
             $table->string('img_url', 255)->nullable();
-            $table->unsignedBigInteger('language_id');
-            $table->foreign('language_id')->references('id')->on('languages');
             $table->timestamps();
         });
     }
